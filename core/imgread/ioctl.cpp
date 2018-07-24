@@ -203,7 +203,7 @@ struct PhysicalDrive:Disc
 
 	bool Build(wchar* path)
 	{
-		drive = CreateFile( path, GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,NULL, OPEN_EXISTING, 0, NULL);
+		//drive = CreateFile( path, GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,NULL, OPEN_EXISTING, 0, NULL);
 
 		if ( INVALID_HANDLE_VALUE == drive )
 			return false; //failed to open
@@ -366,7 +366,7 @@ void PhysicalTrack::Read(u32 FAD,u8* dst,SectorFormat* sector_type,u8* subcode,S
 Disc* ioctl_parse(const wchar* file)
 {
 	
-	if (strlen(file)==3 && GetDriveType(file)==DRIVE_CDROM)
+	/*if (strlen(file)==3 && GetDriveType(file)==DRIVE_CDROM)
 	{
 		printf("Opening device %s ...",file);
 		wchar fn[]={ '\\', '\\', '.', '\\', file[0],':', '\0' };
@@ -382,7 +382,7 @@ Disc* ioctl_parse(const wchar* file)
 			return 0;
 		}
 	}
-	else
+	else*/
 	{
 		return 0;
 	}

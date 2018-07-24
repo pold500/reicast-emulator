@@ -339,7 +339,7 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 // Windows class name to register
-#define WINDOW_CLASS "nilDC"
+#define WINDOW_CLASS L"reicast"
 
 // Width and height of the window
 #define WINDOW_WIDTH  1280
