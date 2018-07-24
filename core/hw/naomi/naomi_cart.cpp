@@ -129,7 +129,7 @@ bool naomi_cart_LoadRom(char* file)
 			continue;
 		}
 #if HOST_OS == OS_WINDOWS
-		RomCache = CreateFile(t, FILE_READ_ACCESS, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+		RomCache = CreateFileA(t, FILE_READ_ACCESS, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 #else
 		RomCache = open(t, O_RDONLY);
 #endif
@@ -210,9 +210,9 @@ bool naomi_cart_SelectFile(void* handle)
 		OPENFILENAME ofn = { 0 };
 		ofn.lStructSize = sizeof(OPENFILENAME);
 		ofn.hInstance = (HINSTANCE)GetModuleHandle(0);
-		ofn.lpstrFile = SelectedFile;
+		//ofn.lpstrFile = SelectedFile;
 		ofn.nMaxFile = MAX_PATH;
-		ofn.lpstrFilter = "*.lst\0*.lst\0\0";
+		ofn.lpstrFilter = L"*.lst\0*.lst\0\0";
 		ofn.nFilterIndex = 0;
 		ofn.hwndOwner = (HWND)handle;
 		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;

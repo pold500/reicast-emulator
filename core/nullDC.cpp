@@ -39,37 +39,34 @@ settings_t settings;
 #include <windows.h>
 #endif
 
-int GetFile(char *szFileName, char *szParse=0,u32 flags=0) 
+#if HOST_OS==OS_WINDOWS
+
+std::pair<std::wstring, bool> GetDiskImageFileName()
 {
-	cfgLoadStr("config","image",szFileName,"null");
-	if (strcmp(szFileName,"null")==0)
+	std::pair<std::wstring, bool> returnResult;
+	std::wstring fileName;
+	const int maxBufferSize = 4096;
+	fileName.resize(maxBufferSize);
 	{
-	#if HOST_OS==OS_WINDOWS
 		OPENFILENAME ofn;
-		ZeroMemory( &ofn , sizeof( ofn));
-	ofn.lStructSize = sizeof ( ofn );
-	ofn.hwndOwner = NULL  ;
-	ofn.lpstrFile = szFileName ;
-	ofn.lpstrFile[0] = '\0';
-	ofn.nMaxFile = MAX_PATH;
-	ofn.lpstrFilter = "All\0*.*\0\0";
-	ofn.nFilterIndex =1;
-	ofn.lpstrFileTitle = NULL ;
-	ofn.nMaxFileTitle = 0 ;
-	ofn.lpstrInitialDir=NULL ;
-	ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST ;
+		ZeroMemory(&ofn, sizeof(ofn));
+		ofn.lStructSize = sizeof(ofn);
+		ofn.hwndOwner = NULL;
+		ofn.lpstrFile[0] = '\0';
+		ofn.nMaxFile = MAX_PATH;
+		ofn.lpstrFilter = L"Disk image file(CDI,MDF,GDI)\0*.cdi;*.mds;*.gdi\0\0";
+		ofn.nFilterIndex = 1;
+		ofn.nMaxFile = maxBufferSize;
+		ofn.lpstrFile = (LPWSTR)fileName[0];
+		ofn.lpstrTitle = L"Open disk image";
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-		if (GetOpenFileNameA(&ofn))
-		{
-			//already there
-			//strcpy(szFileName,ofn.lpstrFile);
-		}
-	#endif
+		returnResult.second = GetOpenFileName(&ofn);
 	}
-
-	return 1; 
+	returnResult.first = fileName;
+	return returnResult;
 }
-
+#endif
 
 s32 plugins_Init()
 {

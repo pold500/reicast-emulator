@@ -13,7 +13,7 @@
 
 wchar* trim_ws(wchar* str)
 {
-	if (str==0 || strlen(str)==0)
+	/*if (str==0 || strlen(str)==0)
 		return 0;
 
 	while(*str)
@@ -38,7 +38,7 @@ wchar* trim_ws(wchar* str)
 
 	if (l==0)
 		return 0;
-
+*/
 	return str;
 }
 
