@@ -203,7 +203,7 @@ bool naomi_cart_LoadRom(char* file)
 
 bool naomi_cart_SelectFile(void* handle)
 {
-	cfgLoadStr("config", "image", SelectedFile, "null");
+	cfgLoadStr("config", "image", std::string(SelectedFile), "null");
 	
 #if HOST_OS == OS_WINDOWS
 	if (strcmp(SelectedFile, "null") == 0) {

@@ -125,11 +125,10 @@ s32  cfgExists(const wchar * Section, const wchar * Key)
 		return (cfgdb.has_section(string(Section)) ? 1 : 0);
 	}
 }
-void  cfgLoadStr(const wchar * Section, const wchar * Key, wchar * Return,const wchar* Default)
+
+void  cfgLoadStr(const std::string& Section, const std::string& Key, std::string& Return, const std::string& Default)
 {
-	string value = cfgdb.get(Section, Key, Default);
-	// FIXME: Buffer overflow possible
-	strcpy(Return, value.c_str());
+	Return = cfgdb.get(Section, Key, Default);
 }
 
 string  cfgLoadStr(const wchar * Section, const wchar * Key, const wchar* Default)

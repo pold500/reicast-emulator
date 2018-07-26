@@ -138,7 +138,7 @@ Disc* OpenDisc(const wchar* fn)
 	return rv;
 }
 
-bool InitDrive_(wchar* fn)
+bool InitDrive_(const wchar* const fn)
 {
 	TermDrive();
 
@@ -164,131 +164,108 @@ bool InitDrive_(wchar* fn)
 }
 
 #ifndef NOT_REICAST
-bool InitDrive(u32 fileflags)
+bool InitDrive(u32 fileflags/*=0*/)
 {
 	if (settings.imgread.LoadDefaultImage)
 	{
-		printf("Loading default image \"%s\"\n",settings.imgread.DefaultImage);
-		if (!InitDrive_(settings.imgread.DefaultImage))
+		printf("Loading default image \"%s\"\n", settings.imgread.DefaultImage);
+		if (!InitDrive_(settings.imgread.DefaultImage.c_str()))
 		{
-			msgboxf("Default image \"%s\" failed to load",MBX_ICONERROR);
+			msgboxf("Default image \"%s\" failed to load", MBX_ICONERROR);
 			return false;
 		}
 		else
 			return true;
 	}
 
-	// FIXME: Data loss if buffer is too small
-	wchar fn[512];
-	strncpy(fn,settings.imgread.LastImage, sizeof(fn));
-	fn[sizeof(fn) - 1] = '\0';
-
+	std::string diskImageFileName{ settings.imgread.LastImage };
 #ifdef BUILD_DREAMCAST
-	int gfrv=GetFile(fn,0,fileflags);
+	int gfrv = GetFile(diskImageFileName);
 #else
-	int gfrv=0;
+	int gfrv = rv_error;
 #endif
-	if (gfrv == 0)
-	{
-		NullDriveDiscType=NoDisk;
-		gd_setdisc();
-		sns_asc=0x29;
-		sns_ascq=0x00;
-		sns_key=0x6;
-		return true;
-	}
-	else if (gfrv == -1)
+	if (gfrv != rv_ok)
 	{
 		return false;
 	}
 
 	// FIXME: Data loss if buffer is too small
-	strncpy(settings.imgread.LastImage, fn, sizeof(settings.imgread.LastImage));
-	settings.imgread.LastImage[sizeof(settings.imgread.LastImage) - 1] = '\0';
+	settings.imgread.LastImage = diskImageFileName;
 
 	SaveSettings();
 
-	if (!InitDrive_(fn))
+	if (!InitDrive_(diskImageFileName.c_str()))
 	{
 		//msgboxf("Selected image failed to load",MBX_ICONERROR);
-			NullDriveDiscType=NoDisk;
-			gd_setdisc();
-			sns_asc=0x29;
-			sns_ascq=0x00;
-			sns_key=0x6;
-		return true;
+		NullDriveDiscType = NoDisk;
+		gd_setdisc();
+		sns_asc = 0x29;
+		sns_ascq = 0x00;
+		sns_key = 0x6;
+		return false;
 	}
-	else
-	{
-		return true;
-	}
+	return true;
 }
 
 bool DiscSwap(u32 fileflags)
 {
 	if (settings.imgread.LoadDefaultImage)
 	{
-		printf("Loading default image \"%s\"\n",settings.imgread.DefaultImage);
-		if (!InitDrive_(settings.imgread.DefaultImage))
+		printf("Loading default image \"%s\"\n", settings.imgread.DefaultImage);
+		if (!InitDrive_(settings.imgread.DefaultImage.c_str()))
 		{
-			msgboxf("Default image \"%s\" failed to load",MBX_ICONERROR);
+			msgboxf("Default image \"%s\" failed to load", MBX_ICONERROR);
 			return false;
 		}
 		else
 			return true;
 	}
 
-	// FIXME: Data loss if buffer is too small
-	wchar fn[512];
-	strncpy(fn, settings.imgread.LastImage, sizeof(fn));
-	fn[sizeof(fn) - 1] = '\0';
-
+	std::string diskImageFileName{ settings.imgread.LastImage };
 
 #ifdef BUILD_DREAMCAST
-	int gfrv=GetFile(fn,0,fileflags);
+	int gfrv = GetFile(diskImageFileName);
 #else
-	int gfrv=0;
+	int gfrv = rv_error;
 #endif
-	if (gfrv == 0)
+	if (gfrv == rv_ok)
 	{
-		NullDriveDiscType=Open;
+		NullDriveDiscType = Open;
 		gd_setdisc();
-		sns_asc=0x28;
-		sns_ascq=0x00;
-		sns_key=0x6;
-		return true;
+		sns_asc = 0x28;
+		sns_ascq = 0x00;
+		sns_key = 0x6;
+		return false;
 	}
-	else if (gfrv == -1)
+	else
 	{
-		sns_asc=0x28;
-		sns_ascq=0x00;
-		sns_key=0x6;
+		sns_asc = 0x28;
+		sns_ascq = 0x00;
+		sns_key = 0x6;
 		return false;
 	}
 
-	// FIXME: Data loss if buffer is too small
-	strncpy(settings.imgread.LastImage, fn, sizeof(settings.imgread.LastImage));
-	settings.imgread.LastImage[sizeof(settings.imgread.LastImage) - 1] = '\0';
 
+	settings.imgread.LastImage = diskImageFileName;
 
 	SaveSettings();
 
-	if (!InitDrive_(fn))
+	if (!InitDrive_(diskImageFileName.c_str()))
 	{
 		//msgboxf("Selected image failed to load",MBX_ICONERROR);
-		NullDriveDiscType=Open;
+		NullDriveDiscType = Open;
 		gd_setdisc();
-		sns_asc=0x28;
-		sns_ascq=0x00;
-		sns_key=0x6;
+		sns_asc = 0x28;
+		sns_ascq = 0x00;
+		sns_key = 0x6;
 		return true;
 	}
 	else
 	{
-		sns_asc=0x28;
-		sns_ascq=0x00;
-		sns_key=0x6;
-		return true;
+		sns_asc = 0x28;
+		sns_ascq = 0x00;
+		sns_key = 0x6;
+		return false;
 	}
 }
 #endif
