@@ -1,14 +1,10 @@
 #include "types.h"
 
 #if HOST_OS==OS_WINDOWS
-#include "common.h"
-
-#include <stddef.h>
+#include <cstddef>
 #include <Windows.h>
-
 #include <ntddscsi.h>
 #include "SCSIDEFS.H"
-
 
 #ifndef noheaders
 #define RAW_SECTOR_SIZE         2352
@@ -257,7 +253,7 @@ struct PhysicalDrive:Disc
 					t.ADDR=ftd->Descriptors[i].Adr;
 					t.CTRL=ftd->Descriptors[i].Control;
 					t.StartFAD=msf2fad(ftd->Descriptors[i].Msf);
-					t.file = new PhysicalTrack(this);
+					t.file.reset( new PhysicalTrack(this));
 
 					tracks.push_back(t);
 
@@ -363,10 +359,9 @@ void PhysicalTrack::Read(u32 FAD,u8* dst,SectorFormat* sector_type,u8* subcode,S
 }
 
 
-Disc* ioctl_parse(const wchar* file)
+std::unique_ptr<Disc> ioctl_parse(const std::string& file)
 {
-	
-	if (strlen(file)==3 && GetDriveType(file)==DRIVE_CDROM)
+	if (strlen(file.c_str())==3 && GetDriveType(file.c_str())==DRIVE_CDROM)
 	{
 		printf("Opening device %s ...",file);
 		wchar fn[]={ '\\', '\\', '.', '\\', file[0],':', '\0' };

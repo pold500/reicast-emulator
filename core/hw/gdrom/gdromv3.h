@@ -3,7 +3,7 @@
 	Handy register definitions and other minor stuff
 */
 #include "types.h"
-
+void gd_setdisc();
 void gdrom_reg_Init();
 void gdrom_reg_Term();
 void gdrom_reg_Reset(bool Manual);

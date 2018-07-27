@@ -131,12 +131,12 @@
     <ClCompile Include="..\core\hw\sh4\sh4_core_regs.cpp" />
     <ClCompile Include="..\core\hw\sh4\sh4_rom.cpp" />
     <ClCompile Include="..\core\hw\sh4\sh4_sched.cpp" />
-    <ClCompile Include="..\core\imgread\cdi.cpp" />
-    <ClCompile Include="..\core\imgread\chd.cpp" />
-    <ClCompile Include="..\core\imgread\common.cpp" />
-    <ClCompile Include="..\core\imgread\gdi.cpp" />
-    <ClCompile Include="..\core\imgread\ImgReader.cpp" />
-    <ClCompile Include="..\core\imgread\ioctl.cpp" />
+    <ClCompile Include="..\core\imgread\cdiParser.cpp" />
+    <ClCompile Include="..\core\imgread\chdParser.cpp" />
+    <ClCompile Include="..\core\imgread\disc.cpp" />
+    <ClCompile Include="..\core\imgread\drive.cpp" />
+    <ClCompile Include="..\core\imgread\gdiParser.cpp" />
+    <ClCompile Include="..\core\imgread\ioctlParser.cpp" />
     <ClCompile Include="..\core\linux\common.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Slow|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Slow|x64'">true</ExcludedFromBuild>
@@ -302,9 +302,8 @@
     <ClInclude Include="..\core\hw\sh4\sh4_core.h" />
     <ClInclude Include="..\core\hw\sh4\sh4_rom.h" />
     <ClInclude Include="..\core\hw\sh4\sh4_sched.h" />
-    <ClInclude Include="..\core\imgread\common.h" />
-    <ClInclude Include="..\core\imgread\gd_driver.h" />
-    <ClInclude Include="..\core\imgread\ImgReader.h" />
+    <ClInclude Include="..\core\imgread\disc.h" />
+    <ClInclude Include="..\core\imgread\drive.h" />
     <ClInclude Include="..\core\imgread\pfctoc.h" />
     <ClInclude Include="..\core\imgread\resource.h" />
     <ClInclude Include="..\core\imgread\SCSIDEFS.H" />

@@ -1,6 +1,11 @@
 #pragma once
-
+#include <cstdint>
+#include <cstddef>
+//includes from CRT
+#include <cstdlib>
+#include <cstdio>
 #include "build.h"
+#include "hw/sh4/sh4_if.h"
 
 #if BUILD_COMPILER==COMPILER_VC
 #define DECL_ALIGN(x) __declspec(align(x))
@@ -68,8 +73,7 @@
 #pragma warning( disable : 4100)
 #endif
 
-#include <stdint.h>
-#include <stddef.h>
+
 
 //basic types
 typedef int8_t  s8;
@@ -303,9 +307,8 @@ struct vram_block
 enum ndc_error_codes
 {
 	rv_ok = 0,		//no error
-
-	rv_error=-2,	//error
 	rv_serror=-1,	//silent error , it has been reported to the user
+	rv_error=-2   	//error
 };
 
 //Simple struct to store window rect  ;)
@@ -331,33 +334,6 @@ vram_block* libCore_vramlock_Lock(u32 start_offset,u32 end_offset,void* userdata
 
 
 
-//******************************************************
-//************************ GDRom ***********************
-//******************************************************
-enum DiscType
-{
-	CdDA=0x00,
-	CdRom=0x10,
-	CdRom_XA=0x20,
-	CdRom_Extra=0x30,
-	CdRom_CDI=0x40,
-	GdRom=0x80,		
-
-	NoDisk=0x1,			//These are a bit hacky .. but work for now ...
-	Open=0x2,			//tray is open :)
-	Busy=0x3			//busy -> needs to be automatically done by gdhost
-};
-
-enum DiskArea
-{
-	SingleDensity,
-	DoubleDensity
-};
-
-enum DriveEvent
-{
-	DiskChange=1	//disk ejected/changed
-};
 
 //******************************************************
 //************************ AICA ************************
@@ -382,8 +358,8 @@ void libCore_CDDA_Sector(s16* sector);
 
 enum MapleDeviceCreationFlags
 {
-	MDCF_None=0,
-	MDCF_Hotplug=1
+	MDCF_None = 0,
+	MDCF_Hotplug = 1
 };
 
 struct maple_subdevice_instance;
@@ -420,9 +396,7 @@ struct maple_device_instance
 };
 
 
-//includes from CRT
-#include <stdlib.h>
-#include <stdio.h>
+
 
 #if defined(TARGET_NACL32)
 	int nacl_printf(const wchar* Text,...);
@@ -770,11 +744,6 @@ static inline void do_nada(...) { }
 	#endif
 #define putinf    LOGI
 #endif
-
-
-
-#include "hw/sh4/sh4_if.h"
-
 //more to come
 
 extern sh4_if				  sh4_cpu;
@@ -824,7 +793,7 @@ void libCore_gdrom_disc_change();
 void libGDR_ReadSector(u8 * buff,u32 StartSector,u32 SectorCount,u32 secsz);
 void libGDR_ReadSubChannel(u8 * buff, u32 format, u32 len);
 void libGDR_GetToc(u32* toc,u32 area);
-u32 libGDR_GetDiscType();
+DiscType libGDR_GetDiscType();
 void libGDR_GetSessionInfo(u8* pout,u8 session);
 
 

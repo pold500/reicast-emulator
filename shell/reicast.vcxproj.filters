@@ -100,24 +100,6 @@
     <ClCompile Include="..\core\deps\chdr\chdr.cpp">
       <Filter>deps\chdr</Filter>
     </ClCompile>
-    <ClCompile Include="..\core\imgread\cdi.cpp">
-      <Filter>imgread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\imgread\chd.cpp">
-      <Filter>imgread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\imgread\common.cpp">
-      <Filter>imgread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\imgread\gdi.cpp">
-      <Filter>imgread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\imgread\ImgReader.cpp">
-      <Filter>imgread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\core\imgread\ioctl.cpp">
-      <Filter>imgread</Filter>
-    </ClCompile>
     <ClCompile Include="..\core\nullDC.cpp" />
     <ClCompile Include="..\core\stdclass.cpp" />
     <ClCompile Include="..\core\cfg\cl.cpp">
@@ -429,6 +411,24 @@
     <ClCompile Include="..\core\cfg\ini.cpp">
       <Filter>cfg</Filter>
     </ClCompile>
+    <ClCompile Include="..\core\imgread\drive.cpp">
+      <Filter>imgread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\imgread\disc.cpp">
+      <Filter>imgread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\imgread\gdiParser.cpp">
+      <Filter>imgread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\imgread\cdiParser.cpp">
+      <Filter>imgread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\imgread\chdParser.cpp">
+      <Filter>imgread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\imgread\ioctlParser.cpp">
+      <Filter>imgread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="hw">
@@ -685,15 +685,6 @@
     <ClInclude Include="..\core\deps\chdr\coretypes.h">
       <Filter>deps\chdr</Filter>
     </ClInclude>
-    <ClInclude Include="..\core\imgread\common.h">
-      <Filter>imgread</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\imgread\gd_driver.h">
-      <Filter>imgread</Filter>
-    </ClInclude>
-    <ClInclude Include="..\core\imgread\ImgReader.h">
-      <Filter>imgread</Filter>
-    </ClInclude>
     <ClInclude Include="..\core\imgread\pfctoc.h">
       <Filter>imgread</Filter>
     </ClInclude>
@@ -945,6 +936,12 @@
     </ClInclude>
     <ClInclude Include="..\core\hw\sh4\modules\mmu_impl.h">
       <Filter>hw\sh4\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\imgread\drive.h">
+      <Filter>imgread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\imgread\disc.h">
+      <Filter>imgread</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

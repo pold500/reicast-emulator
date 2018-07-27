@@ -1,11 +1,12 @@
-#include "common.h"
-#include <ctype.h>
+
+#include <cctype>
 #include <sstream>
 #include <algorithm>
-
+#include <string>
+#include <memory>
 // given file/name.ext or file\name.ext returns file/ or file\, depending on the platform
 // given name.ext returns ./ or .\, depending on the platform
-string OS_dirname(string file)
+std::string OS_dirname(std::string file)
 {
 	#if HOST_OS == OS_WINDOWS
 		const char sep = '\\';
@@ -15,9 +16,9 @@ string OS_dirname(string file)
 
 	size_t last_slash = file.find_last_of(sep);
 
-	if (last_slash == string::npos)
+	if (last_slash == std::string::npos)
 	{
-		string local_dir = ".";
+		std::string local_dir = ".";
 		local_dir += sep;
 		return local_dir;
 	}
@@ -27,7 +28,7 @@ string OS_dirname(string file)
 
 // On windows, transform / to \\
 // On linux, transform \\ to /
-string normalize_path_separator(string path)
+std::string normalize_path_separator(std::string path)
 {
 	#if HOST_OS == OS_WINDOWS
 		std::replace( path.begin(), path.end(), '/', '\\');
@@ -61,10 +62,10 @@ namespace {
 }
 #endif
 
-Disc* load_gdi(const char* file)
+std::unique_ptr<Disc> load_gdi(const char* file)
 {
 	u32 iso_tc;
-	Disc* disc = new Disc();
+	auto disc = std::make_unique<Disc>();
 	
 	//memset(&gdi_toc,0xFFFFFFFF,sizeof(gdi_toc));
 	//memset(&gdi_ses,0xFFFFFFFF,sizeof(gdi_ses));
@@ -91,13 +92,13 @@ Disc* load_gdi(const char* file)
 	printf("\nGDI : %d tracks\n",iso_tc);
 
 	
-	string basepath = OS_dirname(file);
+	std::string basepath = OS_dirname(file);
 
 	u32 TRACK=0,FADS=0,CTRL=0,SSIZE=0;
 	s32 OFFSET=0;
 	for (u32 i=0;i<iso_tc;i++)
 	{
-		string track_filename;
+		std::string track_filename;
 
 		//TRACK FADS CTRL SSIZE file OFFSET
 		gdi >> TRACK;
@@ -140,8 +141,8 @@ Disc* load_gdi(const char* file)
 
 		if (SSIZE!=0)
 		{
-			string path = basepath + normalize_path_separator(track_filename);
-			t.file = new RawTrackFile(core_fopen(path.c_str()),OFFSET,t.StartFAD,SSIZE);	
+			std::string path = basepath + normalize_path_separator(track_filename);
+			t.file.reset( new RawTrackFile(core_fopen(path.c_str()),OFFSET,t.StartFAD,SSIZE));	
 		}
 		disc->tracks.push_back(t);
 	}
@@ -152,19 +153,74 @@ Disc* load_gdi(const char* file)
 }
 
 
-Disc* gdi_parse(const char* file)
+std::unique_ptr<Disc> gdi_parse(const std::std::string& file)
 {
-	size_t len=strlen(file);
-	if (len>4)
+	size_t len = strlen(file.c_str());
+	if (len > 4)
 	{
-		if (stricmp( &file[len-4],".gdi")==0)
+		if (stricmp(&file[len - 4], ".gdi") == 0)
 		{
-			return load_gdi(file);
+			return load_gdi(file.c_str());
 		}
 	}
 	return 0;
 }
 
-void iso_term()
+
+
+void GetSessionInfo(u8* out, u8 ses);
+
+void libGDR_ReadSubChannel(u8 * buff, u32 format, u32 len)
 {
+	if (format == 0)
+	{
+		memcpy(buff, q_subchannel, len);
+	}
+}
+
+void libGDR_ReadSector(u8 * buff, u32 StartSector, u32 SectorCount, u32 secsz)
+{
+	GetDriveSector(buff, StartSector, SectorCount, secsz);
+	//if (CurrDrive)
+	//	CurrDrive->ReadSector(buff,StartSector,SectorCount,secsz);
+}
+
+void libGDR_GetToc(u32* toc, u32 area)
+{
+	GetDriveToc(toc, (DiskArea)area);
+}
+//TODO : fix up
+DiscType libGDR_GetDiscType()
+{
+	/*if (disc)
+		return disc->type;
+	else*/
+	return DiscType::GdRom;
+}
+
+void libGDR_GetSessionInfo(u8* out, u8 ses)
+{
+	GetDriveSessionInfo(out, ses);
+}
+
+void libGDR_Reset(bool Manual)
+{
+	libCore_gdrom_disc_change();
+}
+
+//called when entering sh4 thread , from the new thread context (for any thread specific init)
+s32 libGDR_Init()
+{
+	if (!InitDrive())
+		return rv_serror;
+	libCore_gdrom_disc_change();
+	LoadSettings();
+	settings.imgread.PatchRegion = true;
+	return rv_ok;
+}
+
+//called when exiting from sh4 thread , from the new thread context (for any thread specific init) :P
+void libGDR_Term()
+{
+	TermDrive();
 }
