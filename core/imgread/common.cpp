@@ -23,6 +23,13 @@ Disc*(*drivers[])(const wchar* path)=
 
 u8 q_subchannel[96];
 
+void SetSnsCodes(const u32 asc, const u32 ascq, const u32 key)
+{
+	sns_asc = asc;
+	sns_ascq = ascq;
+	sns_key = key;
+}
+
 void PatchRegion_0(u8* sector,int size)
 {
 #ifndef NOT_REICAST
@@ -199,9 +206,7 @@ bool InitDrive(u32 fileflags/*=0*/)
 		//msgboxf("Selected image failed to load",MBX_ICONERROR);
 		NullDriveDiscType = NoDisk;
 		gd_setdisc();
-		sns_asc = 0x29;
-		sns_ascq = 0x00;
-		sns_key = 0x6;
+		SetSnsCodes(0x29, 0x00, 0x06);
 		return false;
 	}
 	return true;
@@ -232,16 +237,12 @@ bool DiscSwap(u32 fileflags)
 	{
 		NullDriveDiscType = Open;
 		gd_setdisc();
-		sns_asc = 0x28;
-		sns_ascq = 0x00;
-		sns_key = 0x6;
-		return false;
+		SetSnsCodes(0x28, 0x00, 0x06);
+		return true;
 	}
 	else
 	{
-		sns_asc = 0x28;
-		sns_ascq = 0x00;
-		sns_key = 0x6;
+		SetSnsCodes(0x28, 0x00, 0x06); // to fix: we have same return codes as previous branch, looks suspicious
 		return false;
 	}
 
@@ -255,16 +256,12 @@ bool DiscSwap(u32 fileflags)
 		//msgboxf("Selected image failed to load",MBX_ICONERROR);
 		NullDriveDiscType = Open;
 		gd_setdisc();
-		sns_asc = 0x28;
-		sns_ascq = 0x00;
-		sns_key = 0x6;
+		SetSnsCodes(0x28, 0x00, 0x06);
 		return true;
 	}
 	else
 	{
-		sns_asc = 0x28;
-		sns_ascq = 0x00;
-		sns_key = 0x6;
+		SetSnsCodes(0x28, 0x00, 0x06);
 		return false;
 	}
 }
